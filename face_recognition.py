@@ -8,7 +8,7 @@ import numpy as np
 # Code modified from https://github.com/davisking/dlib/blob/master/python_examples/face_recognition.py
 
 if len(sys.argv) != 3:
-    print("To run: python face_recognition.py shape_predictor_5_face_landmarks.dat dlib_face_recognition_resnet_model_v1.dat gt_face.jpg face2.jpg\n")
+    print("To run: python face_recognition.py gt_face.jpg face2.jpg\n")
     exit()
 
 predictor_path = "shape_predictor_5_face_landmarks.dat" #sys.argv[1]
