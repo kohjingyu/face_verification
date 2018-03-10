@@ -6,6 +6,16 @@ from face_exceptions import MultiFaceException, NoFaceException, NoHistoryExcept
 
 import numpy as np
 
+import requests
+from PIL import Image
+from io import BytesIO
+
+def get_image_from_path(img_path):
+    response = requests.get(img_path)
+    img = Image.open(BytesIO(response.content))
+
+    return np.array(img)
+
 def get_images_for_username(username):
     ''' Returns the history of verified faces for username as a list of image paths '''
     # TODO: Implement retrieval of images from user folder
@@ -13,6 +23,7 @@ def get_images_for_username(username):
     # image_path = "images/{0}/".format(username)
     images = []
 
+    # TODO: Retrieve just the top 5 images or something
     for url in history:
         images.append(io.imread(url))
 
@@ -36,7 +47,7 @@ def verify_img(img_path, username):
     sp = dlib.shape_predictor(predictor_path)
     face_rec = dlib.face_recognition_model_v1(face_rec_model_path)
 
-    img = io.imread(img_path)
+    img = get_image_from_path(img_path)
     dets = detector(img, 1)
 
     # Euclidean distance initialization
