@@ -18,8 +18,8 @@ def get_images_for_username(username):
 
     return images
 
-def verify_img(img, username):
-    ''' Takes an img file and verifies it against user with username '''
+def verify_img(img_path, username):
+    ''' Takes an img path and verifies it against user with username '''
     # Get history of verified faces
     gt_faces = get_images_for_username(username)
 
@@ -36,6 +36,7 @@ def verify_img(img, username):
     sp = dlib.shape_predictor(predictor_path)
     face_rec = dlib.face_recognition_model_v1(face_rec_model_path)
 
+    img = io.imread(img_path)
     dets = detector(img, 1)
 
     # Euclidean distance initialization
@@ -74,8 +75,8 @@ def verify_img(img, username):
 
                         # Ensure we don't compare the face against itself
                         if dist == 0:
-                            # TODO: Throw error that this face is from the history. User is uploading an old photo!
-                            pass
+                            # Throw error that this face is from the history. User is uploading an old photo!
+                            raise PastFaceException("This face has been used before. Please upload a current photo.")
                         else:
                             print("Euclidean distance: {0:.5f}".format(dist))
                             total_distance += dist
@@ -100,8 +101,7 @@ if __name__ == "__main__":
         exit()
 
     username = sys.argv[1] # the user we are verifying
-    face_predict = sys.argv[2] # the image to verify
+    img_path = sys.argv[2] # the image to verify
 
-    print("Processing file: {}".format(face_predict))
-    img = io.imread(face_predict)
-    verified = verify_img(img, username)
+    print("Processing file: {}".format(img_path))
+    verified = verify_img(img_path, username)
