@@ -11,26 +11,33 @@ from PIL import Image
 from io import BytesIO
 
 def get_image_from_path(img_path):
-    response = requests.get(img_path)
-    img = Image.open(BytesIO(response.content))
+    # Check whether to download image or load locally
+    if "http" in img_path or "www" in img_path:
+        response = requests.get(img_path)
+        img = Image.open(BytesIO(response.content))
+    else:
+        img = io.imread(img_path)
 
     return np.array(img)
 
 def get_images_for_username(username):
     ''' Returns the history of verified faces for username as a list of image paths '''
-    # TODO: Implement retrieval of images from user folder
-    history = ["images/Anthony/Anthony_Hopkins_0002.jpg", "images/Anthony/Anthony_Hopkins_0001.jpg", "images/Anthony/anthony-hopkins-6.jpg"]
-    # image_path = "images/{0}/".format(username)
+    # This is just for testing, and the server operates on a different directory scheme
+    if username == "anthony_hopkins":
+        history = ["images/Anthony/Anthony_Hopkins_0002.jpg", "images/Anthony/Anthony_Hopkins_0001.jpg", "images/Anthony/anthony-hopkins-6.jpg"]
+    else:
+        history = []
+
     images = []
 
-    # TODO: Retrieve just the top 5 images or something
     for url in history:
         images.append(io.imread(url))
 
     return images
 
 def verify_img(img_path, username):
-    ''' Takes an img path and verifies it against user with username '''
+    ''' Takes an img path and verifies it against user with username, returns whether the user is verified '''
+
     # Get history of verified faces
     gt_faces = get_images_for_username(username)
 
@@ -89,7 +96,7 @@ def verify_img(img_path, username):
                             # Throw error that this face is from the history. User is uploading an old photo!
                             raise PastFaceException("This face has been used before. Please upload a current photo.")
                         else:
-                            print("Euclidean distance: {0:.5f}".format(dist))
+                            # print("Euclidean distance: {0:.5f}".format(dist))
                             total_distance += dist
 
     # Output whether the faces are the same based on dist
