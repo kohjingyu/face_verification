@@ -6,7 +6,7 @@ dlib==19.9.0
 idna==2.6
 matplotlib==2.1.2
 networkx==2.1
-numpy==1.14.0
+numpy==1.22.0
 opencv-python==3.4.0.12
 Pillow==5.0.0
 pyparsing==2.2.0
